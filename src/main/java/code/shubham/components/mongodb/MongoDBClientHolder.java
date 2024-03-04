@@ -20,24 +20,24 @@ public class MongoDBClientHolder {
         return SingletonHolder.INSTANCE;
     }
 
+    private static MongoClientSettings getSettings() {
+        final String uri = "mongodb+srv://root:root1234@myatlasclusteredu.mbfcq0p.mongodb.net/?retryWrites=true&w=majority&appName=myAtlasClusterEDU";
+
+        final CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+        final CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+
+        return MongoClientSettings.builder()
+                .codecRegistry(pojoCodecRegistry)
+                .applyConnectionString(new ConnectionString(uri))
+                .serverApi(
+                        ServerApi.builder()
+                                .version(ServerApiVersion.V1)
+                                .build())
+                .build();
+    }
+
     private static final class SingletonHolder {
-        private static final MongoClient INSTANCE = MongoClients.create(SingletonHolder.getSettings());
-
-        private static MongoClientSettings getSettings() {
-            final String uri = "mongodb+srv://root:root1234@myatlasclusteredu.mbfcq0p.mongodb.net/?retryWrites=true&w=majority&appName=myAtlasClusterEDU";
-
-            final CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-            final CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
-
-            return MongoClientSettings.builder()
-                    .codecRegistry(pojoCodecRegistry)
-                    .applyConnectionString(new ConnectionString(uri))
-                    .serverApi(
-                            ServerApi.builder()
-                                    .version(ServerApiVersion.V1)
-                                    .build())
-                    .build();
-        }
+        private static final MongoClient INSTANCE = MongoClients.create(MongoDBClientHolder.getSettings());
     }
 
 }
